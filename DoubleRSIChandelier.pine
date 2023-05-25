@@ -10,7 +10,7 @@ useClose =  true
 highlightState = input(title='Highlight State ?', defval=true)
 [supertrend, direction] = ta.supertrend(length, length)
 
-rsiSource = input(close, "RSI Source ")
+rsiSource =  close 
 rsiPeriodShort = input(22, "Short RSI Period ")
 rsiPeriodLong = input(100, "Long RSI Period")
  
@@ -31,7 +31,7 @@ shortStopPrev = nz(shortStop[1], shortStop)
 shortStop := close[1] < shortStopPrev ? math.min(shortStop, shortStopPrev) : shortStop
 
 var int dir = 1
-dir := close > shortStopPrev ? 1 : close < longStopPrev ? -1 : dir
+dir := close[1] > shortStopPrev ? 1 : close < longStopPrev ? -1 : dir
 
 var color longColor = color.green
 var color shortColor = color.red
@@ -40,27 +40,21 @@ var color shortColor = color.red
 buySignal = dir == 1 and dir[1] == -1
 sellSignal = dir == -1 and dir[1] == 1
 
-longCondition = isBuy and buySignal
-if (longCondition)
+if (buySignal)
     strategy.entry("l", strategy.long)
 
-shortCondition = isSell and sellSignal
-if (shortCondition) 
+if (sellSignal) 
     strategy.entry("s", strategy.short)
 
 //plotshape(buySignal, title='Buy Signal', text='Buy', textcolor=color.new(color.black, 0), style=shape.labelup, size=size.tiny, location=location.belowbar, color=color.new(color.blue, 0))
 
 
-plotshape(buySignal ? longStop : na, title='Long Stop Start', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(longColor, 0))
-plotshape(longCondition and showLabels ? longStop : na, title='Buy Label', text='Buy', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(longColor, 0), textcolor=color.new(color.white, 0))
+//plotshape(buySignal ? longStop : na, title='Long Stop Start', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(longColor, 0))
+plotshape( buySignal and showLabels ? longStop : na, title='Buy Label', text='Buy', location=location.absolute, style=shape.labelup, size=size.tiny, color=color.new(longColor, 0), textcolor=color.new(color.white, 0))
 
 //shortStopPlot = plot(dir == 1 ? na : shortStop, title='Short Stop', style=plot.style_linebr, linewidth=2, color=color.new(shortColor, 0))
-plotshape(shortCondition ? shortStop : na, title='Short Stop Start', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(shortColor, 0))
+//plotshape(shortCondition ? shortStop : na, title='Short Stop Start', location=location.absolute, style=shape.circle, size=size.tiny, color=color.new(shortColor, 0))
 //plotshape(sellSignal and showLabels ? shortStop : na, title='Sell Label', text='Sell', location=location.absolute, style=shape.labeldown, size=size.tiny, color=color.new(shortColor, 0), textcolor=color.new(color.white, 0))
-plotshape(shortCondition, title='Sell Signal', text='Sell', textcolor=color.new(color.black, 0), style=shape.labeldown, size=size.tiny, location=location.abovebar, color=color.new(color.orange, 0))
+plotshape(sellSignal and showLabels ? shortStop : na, title='Sell Signal', text='Sell', textcolor=color.new(color.black, 0), style=shape.labeldown, size=size.tiny, location=location.abovebar, color=color.new(color.orange, 0))
 
-midPricePlot = plot(ohlc4, title='', style=plot.style_circles, linewidth=0, display=display.none, editable=false)
-
-longFillColor = highlightState ? dir == 1 ? longColor : na : na
-shortFillColor = highlightState ? dir == -1 ? shortColor : na : na 
-changeCond = dir != dir[1]
+  
