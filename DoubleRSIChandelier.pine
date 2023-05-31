@@ -1,18 +1,18 @@
 // © dexbotdev
 
 //@version=5
-strategy("Double RSI with Chandelier Exit", overlay=true, margin_long=5, margin_short=5)
+strategy("Double RSI with Chandelier Exit", overlay=true)
 
-length = input.int(title="ATR Period", defval=1)
-mult = input.float(title="ATR Multiplier",  step=0.1, defval=2.45)
+length = input.int(title="ATR Period", defval=2)
+mult = input.float(title="ATR Multiplier",  step=0.1, defval=1)
 showLabels = input(title='Show Buy/Sell Labels ?', defval=true)
 useClose =  true
 highlightState = input(title='Highlight State ?', defval=true)
 [supertrend, direction] = ta.supertrend(length, length)
 
 rsiSource =  close 
-rsiPeriodShort = input(7, "Short RSI Period ")
-rsiPeriodLong = input(21, "Long RSI Period")
+rsiPeriodShort = input(25, "Short RSI Period ")
+rsiPeriodLong = input(100, "Long RSI Period")
  
 
 rsi25 = ta.rsi(rsiSource, rsiPeriodShort)
